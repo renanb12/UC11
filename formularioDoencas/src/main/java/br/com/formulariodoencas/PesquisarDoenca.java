@@ -4,6 +4,11 @@
  */
 package br.com.formulariodoencas;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author 05632593029
@@ -15,6 +20,7 @@ public class PesquisarDoenca extends javax.swing.JFrame {
      */
     public PesquisarDoenca() {
         initComponents();
+//        atualizarTabelaDoencas("");
     }
 
     /**
@@ -28,17 +34,17 @@ public class PesquisarDoenca extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jTextField1 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        tblDoenca = new javax.swing.JTable();
+        txtDoenca = new javax.swing.JTextField();
+        btnAlterar = new javax.swing.JButton();
+        btnExcluir = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
+        btnPesquisar = new javax.swing.JButton();
+        lblInsiraDoenca = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblDoenca.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -61,11 +67,11 @@ public class PesquisarDoenca extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tblDoenca);
 
-        jButton1.setText("Alterar");
+        btnAlterar.setText("Alterar");
 
-        jButton2.setText("Excluir");
+        btnExcluir.setText("Excluir");
 
         btnCancelar.setText("Cancelar");
         btnCancelar.addActionListener(new java.awt.event.ActionListener() {
@@ -74,10 +80,15 @@ public class PesquisarDoenca extends javax.swing.JFrame {
             }
         });
 
-        jButton4.setText("Pesquisar");
+        btnPesquisar.setText("Pesquisar");
+        btnPesquisar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPesquisarActionPerformed(evt);
+            }
+        });
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        jLabel1.setText("Insira a doença");
+        lblInsiraDoenca.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        lblInsiraDoenca.setText("Insira a doença");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -86,16 +97,16 @@ public class PesquisarDoenca extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(29, 29, 29)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
+                    .addComponent(lblInsiraDoenca)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtDoenca, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton4))
+                            .addComponent(btnPesquisar))
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                            .addComponent(jButton1)
+                            .addComponent(btnAlterar)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton2)
+                            .addComponent(btnExcluir)
                             .addGap(114, 114, 114)
                             .addComponent(btnCancelar))
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -105,17 +116,17 @@ public class PesquisarDoenca extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(16, Short.MAX_VALUE)
-                .addComponent(jLabel1)
+                .addComponent(lblInsiraDoenca)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton4))
+                    .addComponent(txtDoenca, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnPesquisar))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2)
+                    .addComponent(btnAlterar)
+                    .addComponent(btnExcluir)
                     .addComponent(btnCancelar))
                 .addGap(16, 16, 16))
         );
@@ -140,6 +151,12 @@ public class PesquisarDoenca extends javax.swing.JFrame {
         new TelaPrincipal().setVisible(true);
         this.dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
+
+    private void btnPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPesquisarActionPerformed
+        // TODO add your handling code here:
+        String doenca = txtDoenca.getText();
+        atualizarTabelaDoencas(doenca);
+    }//GEN-LAST:event_btnPesquisarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -175,16 +192,31 @@ public class PesquisarDoenca extends javax.swing.JFrame {
             }
         });
     }
+    
+    private void atualizarTabelaDoencas(String doenca) {
+        DefaultTableModel model = (DefaultTableModel) tblDoenca.getModel();
+        model.setRowCount(0); // Limpa a tabela
+
+        try {
+            ResultSet rs = ConexaoBD.pesquisarDoenca(doenca);
+            while (rs.next()) {
+                model.addRow(new Object[]{rs.getInt("codigo"), rs.getString("nome"), rs.getString("descricao")});
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Erro ao buscar doenças.", "Erro", JOptionPane.ERROR_MESSAGE);
+//            e.printStackTrace();
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAlterar;
     private javax.swing.JButton btnCancelar;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton btnExcluir;
+    private javax.swing.JButton btnPesquisar;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JLabel lblInsiraDoenca;
+    private javax.swing.JTable tblDoenca;
+    private javax.swing.JTextField txtDoenca;
     // End of variables declaration//GEN-END:variables
 }

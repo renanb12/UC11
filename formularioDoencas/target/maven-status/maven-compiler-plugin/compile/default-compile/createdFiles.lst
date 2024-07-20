@@ -1,6 +1,8 @@
 br\com\formulariodoencas\TelaPrincipal$4.class
 br\com\formulariodoencas\IdentificacaoDeDoencasPorSintomas$1.class
 br\com\formulariodoencas\PesquisarDoenca$2.class
+br\com\formulariodoencas\CadastroDoencas$3.class
+br\com\formulariodoencas\CadastroSintomas$3.class
 br\com\formulariodoencas\Main.class
 br\com\formulariodoencas\VincularSintomas$2.class
 br\com\formulariodoencas\TelaPrincipal$6.class
@@ -8,6 +10,7 @@ br\com\formulariodoencas\TelaPrincipal$2.class
 br\com\formulariodoencas\CadastroSintomas.class
 br\com\formulariodoencas\PesquisarSintoma$3.class
 br\com\formulariodoencas\TelaPrincipal$7.class
+br\com\formulariodoencas\ConfiguracaoBancoDeDados.class
 br\com\formulariodoencas\PesquisarSintoma.class
 br\com\formulariodoencas\TelaPrincipal$1.class
 br\com\formulariodoencas\CadastroSintomas$1.class
@@ -26,7 +29,9 @@ br\com\formulariodoencas\PesquisarDoenca$3.class
 br\com\formulariodoencas\VinculoDoencaSintomas$1.class
 br\com\formulariodoencas\TelaPrincipal.class
 br\com\formulariodoencas\CadastroDoencas$1.class
+br\com\formulariodoencas\PesquisarDoenca$4.class
 br\com\formulariodoencas\IdentificacaoDeDoencasPorSintomas.class
 br\com\formulariodoencas\TelaPrincipal$5.class
+br\com\formulariodoencas\ConexaoBD.class
 br\com\formulariodoencas\PesquisarDoenca.class
 br\com\formulariodoencas\CadastroSintomas$2.class
