@@ -4,6 +4,8 @@
  */
 package br.com.formulariodoencas;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JOptionPane;
@@ -20,7 +22,7 @@ public class PesquisarDoenca extends javax.swing.JFrame {
      */
     public PesquisarDoenca() {
         initComponents();
-//        atualizarTabelaDoencas("");
+        atualizarTabelaDoencas("");
     }
 
     /**
@@ -70,8 +72,18 @@ public class PesquisarDoenca extends javax.swing.JFrame {
         jScrollPane1.setViewportView(tblDoenca);
 
         btnAlterar.setText("Alterar");
+        btnAlterar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAlterarActionPerformed(evt);
+            }
+        });
 
         btnExcluir.setText("Excluir");
+        btnExcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExcluirActionPerformed(evt);
+            }
+        });
 
         btnCancelar.setText("Cancelar");
         btnCancelar.addActionListener(new java.awt.event.ActionListener() {
@@ -158,9 +170,68 @@ public class PesquisarDoenca extends javax.swing.JFrame {
         atualizarTabelaDoencas(doenca);
     }//GEN-LAST:event_btnPesquisarActionPerformed
 
+    private void btnAlterarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAlterarActionPerformed
+        // TODO add your handling code here:
+        int selectedRow = tblDoenca.getSelectedRow();
+        if (selectedRow != -1) {
+            int id = (int) tblDoenca.getValueAt(selectedRow, 0);
+            String novoNome = JOptionPane.showInputDialog(this, "Novo nome da doença:");
+            if (novoNome != null && !novoNome.trim().isEmpty()) {
+                boolean sucesso = ConexaoBD.alterarDoenca(id, novoNome);
+                if (sucesso) {
+                    JOptionPane.showMessageDialog(this, "Doença alterada com sucesso.");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Erro ao alterar a doença.");
+                }
+                atualizarTabelaDoencas(txtDoenca.getText());
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Selecione uma doença para alterar.");
+        }
+    }//GEN-LAST:event_btnAlterarActionPerformed
+
+    private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
+        // TODO add your handling code here:
+        int selectedRow = tblDoenca.getSelectedRow();
+        if (selectedRow != -1) {
+            int id = (int) tblDoenca.getValueAt(selectedRow, 0);
+            int resposta = JOptionPane.showConfirmDialog(this, "Tem certeza de que deseja excluir esta doença?", "Confirmar Exclusão", JOptionPane.YES_NO_OPTION);
+            if (resposta == JOptionPane.YES_OPTION) {
+                boolean sucesso = ConexaoBD.excluirDoenca(id);
+                if (sucesso) {
+                    JOptionPane.showMessageDialog(this, "Doença excluída com sucesso.");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Erro ao excluir a doença.");
+                }
+                atualizarTabelaDoencas(txtDoenca.getText());
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Selecione uma doença para excluir.");
+        }
+    }//GEN-LAST:event_btnExcluirActionPerformed
+
     /**
      * @param args the command line arguments
      */
+    private void atualizarTabelaDoencas(String nomeDoenca) {
+        DefaultTableModel model = (DefaultTableModel) tblDoenca.getModel();
+        model.setRowCount(0); // Clear existing rows
+
+        String sql = "SELECT id, nome FROM doencas WHERE nome LIKE ?";
+        try (Connection conn = ConexaoBD.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, "%" + nomeDoenca + "%");
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String nome = rs.getString("nome");
+                model.addRow(new Object[]{id, nome});
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Erro ao buscar doenças: " + e.getMessage());
+        }
+    }
+    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -193,20 +264,6 @@ public class PesquisarDoenca extends javax.swing.JFrame {
         });
     }
     
-    private void atualizarTabelaDoencas(String doenca) {
-        DefaultTableModel model = (DefaultTableModel) tblDoenca.getModel();
-        model.setRowCount(0); // Limpa a tabela
-
-        try {
-            ResultSet rs = ConexaoBD.pesquisarDoenca(doenca);
-            while (rs.next()) {
-                model.addRow(new Object[]{rs.getInt("codigo"), rs.getString("nome"), rs.getString("descricao")});
-            }
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Erro ao buscar doenças.", "Erro", JOptionPane.ERROR_MESSAGE);
-//            e.printStackTrace();
-        }
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAlterar;

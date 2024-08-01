@@ -4,6 +4,13 @@
  */
 package br.com.formulariodoencas;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author 05632593029
@@ -15,6 +22,7 @@ public class PesquisarSintoma extends javax.swing.JFrame {
      */
     public PesquisarSintoma() {
         initComponents();
+        atualizarTabelaSintomas("");
     }
 
     /**
@@ -28,17 +36,17 @@ public class PesquisarSintoma extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jTextField1 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        tblSintoma = new javax.swing.JTable();
+        txtSintoma = new javax.swing.JTextField();
+        btnAlterar = new javax.swing.JButton();
+        btnExcluir = new javax.swing.JButton();
         btnCancelar = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
+        btnPesquisar = new javax.swing.JButton();
+        lblInserirSintoma = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblSintoma.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -61,11 +69,21 @@ public class PesquisarSintoma extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tblSintoma);
 
-        jButton1.setText("Alterar");
+        btnAlterar.setText("Alterar");
+        btnAlterar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAlterarActionPerformed(evt);
+            }
+        });
 
-        jButton2.setText("Excluir");
+        btnExcluir.setText("Excluir");
+        btnExcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExcluirActionPerformed(evt);
+            }
+        });
 
         btnCancelar.setText("Cancelar");
         btnCancelar.addActionListener(new java.awt.event.ActionListener() {
@@ -74,10 +92,15 @@ public class PesquisarSintoma extends javax.swing.JFrame {
             }
         });
 
-        jButton4.setText("Pesquisar");
+        btnPesquisar.setText("Pesquisar");
+        btnPesquisar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPesquisarActionPerformed(evt);
+            }
+        });
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        jLabel1.setText("Insira o sintoma");
+        lblInserirSintoma.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        lblInserirSintoma.setText("Insira o sintoma");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -86,16 +109,16 @@ public class PesquisarSintoma extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(29, 29, 29)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
+                    .addComponent(lblInserirSintoma)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addGroup(jPanel1Layout.createSequentialGroup()
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtSintoma, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton4))
+                            .addComponent(btnPesquisar))
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                            .addComponent(jButton1)
+                            .addComponent(btnAlterar)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton2)
+                            .addComponent(btnExcluir)
                             .addGap(114, 114, 114)
                             .addComponent(btnCancelar))
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -105,17 +128,17 @@ public class PesquisarSintoma extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(16, Short.MAX_VALUE)
-                .addComponent(jLabel1)
+                .addComponent(lblInserirSintoma)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton4))
+                    .addComponent(txtSintoma, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnPesquisar))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2)
+                    .addComponent(btnAlterar)
+                    .addComponent(btnExcluir)
                     .addComponent(btnCancelar))
                 .addGap(16, 16, 16))
         );
@@ -141,9 +164,73 @@ public class PesquisarSintoma extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
+    private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
+        // TODO add your handling code here:
+        
+        int selectedRow = tblSintoma.getSelectedRow();
+        if (selectedRow != -1) {
+            int id = (int) tblSintoma.getValueAt(selectedRow, 0);
+            int resposta = JOptionPane.showConfirmDialog(this, "Tem certeza de que deseja excluir este sintoma?", "Confirmar Exclusão", JOptionPane.YES_NO_OPTION);
+            if (resposta == JOptionPane.YES_OPTION) {
+                boolean sucesso = ConexaoBD.excluirSintoma(id);
+                if (sucesso) {
+                    JOptionPane.showMessageDialog(this, "Sintoma excluído com sucesso.");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Erro ao excluir o sintoma.");
+                }
+                atualizarTabelaSintomas(txtSintoma.getText());
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Selecione um sintoma para excluir.");
+        }
+    }//GEN-LAST:event_btnExcluirActionPerformed
+
+    private void btnAlterarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAlterarActionPerformed
+        // TODO add your handling code here:
+        int selectedRow = tblSintoma.getSelectedRow();
+        if (selectedRow != -1) {
+            int id = (int) tblSintoma.getValueAt(selectedRow, 0);
+            String novoNome = JOptionPane.showInputDialog(this, "Digite o novo nome do sintoma:");
+            if (novoNome != null && !novoNome.trim().isEmpty()) {
+                boolean sucesso = ConexaoBD.alterarSintoma(id, novoNome);
+                if (sucesso) {
+                    JOptionPane.showMessageDialog(this, "Sintoma alterado com sucesso.");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Erro ao alterar o sintoma.");
+                }
+                atualizarTabelaSintomas(txtSintoma.getText());
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Selecione um sintoma para alterar.");
+        }
+    }//GEN-LAST:event_btnAlterarActionPerformed
+
+    private void btnPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPesquisarActionPerformed
+        // TODO add your handling code here:
+        atualizarTabelaSintomas(txtSintoma.getText());
+    }//GEN-LAST:event_btnPesquisarActionPerformed
+
     /**
      * @param args the command line arguments
      */
+    
+    private void atualizarTabelaSintomas(String filtro) {
+        DefaultTableModel model = (DefaultTableModel) tblSintoma.getModel();
+        model.setRowCount(0);
+        String sql = "SELECT id, nome FROM sintomas WHERE nome LIKE ?";
+        try (Connection conn = ConexaoBD.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, "%" + filtro + "%");
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String nome = rs.getString("nome");
+                model.addRow(new Object[]{id, nome});
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -177,14 +264,14 @@ public class PesquisarSintoma extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAlterar;
     private javax.swing.JButton btnCancelar;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton btnExcluir;
+    private javax.swing.JButton btnPesquisar;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JLabel lblInserirSintoma;
+    private javax.swing.JTable tblSintoma;
+    private javax.swing.JTextField txtSintoma;
     // End of variables declaration//GEN-END:variables
 }

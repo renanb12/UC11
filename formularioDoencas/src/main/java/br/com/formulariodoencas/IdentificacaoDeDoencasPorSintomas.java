@@ -4,6 +4,16 @@
  */
 package br.com.formulariodoencas;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author 05632593029
@@ -15,6 +25,7 @@ public class IdentificacaoDeDoencasPorSintomas extends javax.swing.JFrame {
      */
     public IdentificacaoDeDoencasPorSintomas() {
         initComponents();
+        atualizarTabelaSintomas("");
     }
 
     /**
@@ -27,18 +38,118 @@ public class IdentificacaoDeDoencasPorSintomas extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblSintomas = new javax.swing.JTable();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tblDoencaSintomas = new javax.swing.JTable();
+        btnIdentificarDoenca = new javax.swing.JButton();
+        btnLimpar = new javax.swing.JButton();
+        btnCancelar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        tblSintomas.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Sitomas"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        tblSintomas.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        jScrollPane1.setViewportView(tblSintomas);
+
+        tblDoencaSintomas.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Doença", "Sintomas"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.String.class, java.lang.String.class
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+        });
+        jScrollPane2.setViewportView(tblDoencaSintomas);
+
+        btnIdentificarDoenca.setText("Identificar doença");
+        btnIdentificarDoenca.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnIdentificarDoencaActionPerformed(evt);
+            }
+        });
+
+        btnLimpar.setText("Limpar");
+        btnLimpar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLimparActionPerformed(evt);
+            }
+        });
+
+        btnCancelar.setText("Cancelar");
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(41, 41, 41)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(84, Short.MAX_VALUE))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addComponent(btnIdentificarDoenca)
+                .addGap(169, 169, 169)
+                .addComponent(btnCancelar)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnLimpar)
+                .addGap(43, 43, 43))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(40, 40, 40)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 295, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addGap(38, 38, 38)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnIdentificarDoenca)
+                    .addComponent(btnLimpar)
+                    .addComponent(btnCancelar))
+                .addContainerGap(125, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -56,9 +167,91 @@ public class IdentificacaoDeDoencasPorSintomas extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnIdentificarDoencaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIdentificarDoencaActionPerformed
+        // TODO add your handling code here:
+        // Obter sintomas selecionados
+        DefaultTableModel modelSintomas = (DefaultTableModel) tblSintomas.getModel();
+        int[] selectedRows = tblSintomas.getSelectedRows();
+
+        // Verificar se o usuário selecionou pelo menos 3 sintomas
+        if (selectedRows.length < 3) {
+            JOptionPane.showMessageDialog(this, "Selecione pelo menos 3 sintomas.");
+            return;
+        }
+
+        // Construir a lista de sintomas selecionados
+        List<String> sintomasSelecionados = new ArrayList<>();
+        for (int i = 0; i < selectedRows.length; i++) {
+            sintomasSelecionados.add(modelSintomas.getValueAt(selectedRows[i], 0).toString());
+        }
+
+        // Consultar as doenças e contar correspondências de sintomas
+        String sql = "SELECT d.nome AS doenca, "
+                + "       COUNT(ds.sintoma_id) AS correspondencias "
+                + "FROM doencas d "
+                + "JOIN doenca_sintoma ds ON d.id = ds.doenca_id "
+                + "JOIN sintomas s ON ds.sintoma_id = s.id "
+                + "WHERE s.nome IN (" + String.join(",", Collections.nCopies(sintomasSelecionados.size(), "?")) + ") "
+                + "GROUP BY d.id "
+                + "ORDER BY correspondencias DESC "
+                + "LIMIT 1"; // Limita a 1 doença com maior correspondência
+
+        DefaultTableModel modelDoencaSintomas = (DefaultTableModel) tblDoencaSintomas.getModel();
+        modelDoencaSintomas.setRowCount(0);
+
+        try (Connection conn = ConexaoBD.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            // Define os parâmetros da consulta
+            for (int i = 0; i < sintomasSelecionados.size(); i++) {
+                pstmt.setString(i + 1, sintomasSelecionados.get(i));
+            }
+
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                String doenca = rs.getString("doenca");
+                int correspondencias = rs.getInt("correspondencias");
+                modelDoencaSintomas.addRow(new Object[]{doenca, correspondencias});
+            } else {
+                JOptionPane.showMessageDialog(this, "Nenhuma doença encontrada com os sintomas selecionados.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Erro ao identificar doenças: " + e.getMessage());
+        }
+    }//GEN-LAST:event_btnIdentificarDoencaActionPerformed
+
+    private void btnLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimparActionPerformed
+        // TODO add your handling code here:
+        DefaultTableModel doencaSintomasModel = (DefaultTableModel) tblDoencaSintomas.getModel();
+
+        // Limpar todas as linhas da tabela
+        doencaSintomasModel.setRowCount(0);
+    }//GEN-LAST:event_btnLimparActionPerformed
+
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        // TODO add your handling code here:
+        new TelaPrincipal().setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_btnCancelarActionPerformed
+
     /**
      * @param args the command line arguments
      */
+    private void atualizarTabelaSintomas(String filtro) {
+        DefaultTableModel model = (DefaultTableModel) tblSintomas.getModel();
+        model.setRowCount(0);
+        String sql = "SELECT id, nome FROM sintomas WHERE nome LIKE ?";
+        try (Connection conn = ConexaoBD.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, "%" + filtro + "%");
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                String nome = rs.getString("nome");
+                model.addRow(new Object[]{nome});
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -92,6 +285,14 @@ public class IdentificacaoDeDoencasPorSintomas extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCancelar;
+    private javax.swing.JButton btnIdentificarDoenca;
+    private javax.swing.JButton btnLimpar;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable tblDoencaSintomas;
+    private javax.swing.JTable tblSintomas;
     // End of variables declaration//GEN-END:variables
 }
